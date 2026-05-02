@@ -1,10 +1,10 @@
 #include "sts_io.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
 #include <ctype.h>
 #include <limits.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -15,14 +15,12 @@
 static int g_initialized = 0;
 static void (*g_header_callback)(void) = NULL;
 
-static const char* g_color_codes[] = {
-    "\033[0m", "\033[30m", "\033[31m", "\033[32m", "\033[33m",
-    "\033[34m", "\033[35m", "\033[36m", "\033[37m", "\033[90m",
-    "\033[91m", "\033[92m", "\033[93m", "\033[94m", "\033[95m",
-    "\033[96m", "\033[97m"
-};
+static const char *g_color_codes[] = {
+    "\033[0m",  "\033[30m", "\033[31m", "\033[32m", "\033[33m", "\033[34m",
+    "\033[35m", "\033[36m", "\033[37m", "\033[90m", "\033[91m", "\033[92m",
+    "\033[93m", "\033[94m", "\033[95m", "\033[96m", "\033[97m"};
 
-static int is_blank_line(const char* str) {
+static int is_blank_line(const char *str) {
     while (*str) {
         if (!isspace((unsigned char)*str)) {
             return 0;
@@ -32,8 +30,8 @@ static int is_blank_line(const char* str) {
     return 1;
 }
 
-static int is_valid_integer(const char* str, int* out_value) {
-    char* endptr;
+static int is_valid_integer(const char *str, int *out_value) {
+    char *endptr;
     long val = strtol(str, &endptr, 10);
 
     if (endptr == str) {
@@ -53,8 +51,8 @@ static int is_valid_integer(const char* str, int* out_value) {
     return 1;
 }
 
-static int is_valid_single_char(const char* str, char* out_char) {
-    const char* p = str;
+static int is_valid_single_char(const char *str, char *out_char) {
+    const char *p = str;
 
     while (*p && isspace((unsigned char)*p)) {
         p++;
@@ -76,7 +74,7 @@ static int is_valid_single_char(const char* str, char* out_char) {
     return (*p == '\0');
 }
 
-static int str_ci_equal(const char* a, const char* b) {
+static int str_ci_equal(const char *a, const char *b) {
     while (*a && *b) {
         if (tolower((unsigned char)*a) != tolower((unsigned char)*b)) {
             return 0;
@@ -87,7 +85,7 @@ static int str_ci_equal(const char* a, const char* b) {
     return (*a == '\0' && *b == '\0');
 }
 
-static int parse_bool(const char* str) {
+static int parse_bool(const char *str) {
     char trimmed[16];
     int i = 0;
 
@@ -110,7 +108,7 @@ static int parse_bool(const char* str) {
     return -1;
 }
 
-static void print_error(const char* msg) {
+static void print_error(const char *msg) {
     sts_init();
     sts_set_color(STS_COLOR_BRIGHT_RED);
     printf("  [Error] %s\n", msg);
@@ -148,17 +146,14 @@ void sts_clear_screen(void) {
     }
 }
 
-void sts_set_header(void (*func)(void)) {
-    g_header_callback = func;
-}
+void sts_set_header(void (*func)(void)) { g_header_callback = func; }
 
-void sts_clear_header(void) {
-    g_header_callback = NULL;
-}
+void sts_clear_header(void) { g_header_callback = NULL; }
 
 void sts_set_color(StsColor color) {
     sts_init();
-    if (color >= 0 && color < (int)(sizeof(g_color_codes) / sizeof(g_color_codes[0]))) {
+    if (color >= 0 &&
+        color < (int)(sizeof(g_color_codes) / sizeof(g_color_codes[0]))) {
         fputs(g_color_codes[color], stdout);
         fflush(stdout);
     }
@@ -170,7 +165,7 @@ void sts_reset_color(void) {
     fflush(stdout);
 }
 
-int sts_read_int(const char* prompt) {
+int sts_read_int(const char *prompt) {
     char buf[STS_IO_BUFFER_SIZE];
     int value;
 
@@ -194,7 +189,8 @@ int sts_read_int(const char* prompt) {
         size_t len = strlen(buf);
         if (len > 0 && buf[len - 1] != '\n') {
             int c;
-            while ((c = getchar()) != '\n' && c != EOF);
+            while ((c = getchar()) != '\n' && c != EOF)
+                ;
         }
 
         if (is_valid_integer(buf, &value)) {
@@ -205,7 +201,7 @@ int sts_read_int(const char* prompt) {
     }
 }
 
-int sts_read_int_range(const char* prompt, int min_val, int max_val) {
+int sts_read_int_range(const char *prompt, int min_val, int max_val) {
     int value;
 
     while (1) {
@@ -217,13 +213,13 @@ int sts_read_int_range(const char* prompt, int min_val, int max_val) {
 
         char err_msg[128];
         snprintf(err_msg, sizeof(err_msg),
-                 "Please enter an integer between %d and %d!",
-                 min_val, max_val);
+                 "Please enter an integer between %d and %d!", min_val,
+                 max_val);
         print_error(err_msg);
     }
 }
 
-char sts_read_char(const char* prompt) {
+char sts_read_char(const char *prompt) {
     char buf[STS_IO_BUFFER_SIZE];
     char result;
 
@@ -247,7 +243,8 @@ char sts_read_char(const char* prompt) {
         size_t len = strlen(buf);
         if (len > 0 && buf[len - 1] != '\n') {
             int c;
-            while ((c = getchar()) != '\n' && c != EOF);
+            while ((c = getchar()) != '\n' && c != EOF)
+                ;
         }
 
         if (is_valid_single_char(buf, &result)) {
@@ -258,7 +255,7 @@ char sts_read_char(const char* prompt) {
     }
 }
 
-int sts_read_bool(const char* prompt) {
+int sts_read_bool(const char *prompt) {
     char buf[STS_IO_BUFFER_SIZE];
     int result;
 
@@ -282,7 +279,8 @@ int sts_read_bool(const char* prompt) {
         size_t len = strlen(buf);
         if (len > 0 && buf[len - 1] != '\n') {
             int c;
-            while ((c = getchar()) != '\n' && c != EOF);
+            while ((c = getchar()) != '\n' && c != EOF)
+                ;
         }
 
         result = parse_bool(buf);
@@ -294,7 +292,7 @@ int sts_read_bool(const char* prompt) {
     }
 }
 
-void sts_read_line(const char* prompt, char* buf, int buf_size) {
+void sts_read_line(const char *prompt, char *buf, int buf_size) {
     sts_init();
 
     if (prompt) {
@@ -303,7 +301,7 @@ void sts_read_line(const char* prompt, char* buf, int buf_size) {
     }
 
     char temp_buf[STS_IO_BUFFER_SIZE];
-    char* use_buf = buf ? buf : temp_buf;
+    char *use_buf = buf ? buf : temp_buf;
     int use_size = buf ? buf_size : (int)sizeof(temp_buf);
 
     if (fgets(use_buf, use_size, stdin) == NULL) {
@@ -311,27 +309,29 @@ void sts_read_line(const char* prompt, char* buf, int buf_size) {
             printf("\n");
             exit(0);
         }
-        if (buf) buf[0] = '\0';
+        if (buf)
+            buf[0] = '\0';
         return;
     }
 
     size_t len = strlen(use_buf);
     if (len > 0 && use_buf[len - 1] != '\n') {
         int c;
-        while ((c = getchar()) != '\n' && c != EOF);
+        while ((c = getchar()) != '\n' && c != EOF)
+            ;
     } else if (len > 0 && use_buf[len - 1] == '\n') {
         use_buf[len - 1] = '\0';
     }
 }
 
-void sts_pause(const char* prompt) {
+void sts_pause(const char *prompt) {
     if (prompt == NULL) {
         prompt = "Press Enter to continue...";
     }
     sts_read_line(prompt, NULL, 0);
 }
 
-void sts_printf(const char* format, ...) {
+void sts_printf(const char *format, ...) {
     va_list args;
     va_start(args, format);
     vprintf(format, args);
@@ -339,7 +339,7 @@ void sts_printf(const char* format, ...) {
     fflush(stdout);
 }
 
-void sts_puts(const char* line) {
+void sts_puts(const char *line) {
     printf("%s\n", line);
     fflush(stdout);
 }
@@ -355,7 +355,7 @@ void sts_separator(void) {
     sts_puts(buf);
 }
 
-void sts_title(const char* title) {
+void sts_title(const char *title) {
     int width = STS_DEFAULT_WIDTH;
 
     sts_separator();
@@ -364,13 +364,13 @@ void sts_title(const char* title) {
         title = "";
     }
 
-    const char* p = title;
+    const char *p = title;
     do {
-        const char* end = strchr(p, '\n');
+        const char *end = strchr(p, '\n');
         if (!end) {
             end = p + strlen(p);
         }
-        
+
         int line_len = (int)(end - p);
 
         if (line_len > width) {
@@ -398,8 +398,9 @@ void sts_title(const char* title) {
 
 /* ==================== Type-safe print functions ==================== */
 
-void sts_print_str(const char* s) {
-    if(s) fputs(s, stdout);
+void sts_print_str(const char *s) {
+    if (s)
+        fputs(s, stdout);
     fflush(stdout);
 }
 

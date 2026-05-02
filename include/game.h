@@ -1,11 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-typedef enum {
-    STATE_EXIT,
-    STATE_MENU,
-    STATE_GAMEPLAY
-} GameState;
+typedef enum { STATE_EXIT, STATE_MENU, STATE_GAMEPLAY } GameState;
 
 GameState show_main_menu();
 GameState start_gameplay();
@@ -28,6 +24,6 @@ typedef struct {
 
 void draw_hud();
 
-void deal_damage(Entity* target, int damage);
+void deal_damage(Entity *target, int damage);
 
 #endif

@@ -7,36 +7,35 @@ int main() {
 
     while (1) {
         switch (current) {
-            case STATE_EXIT:
-                sts_println("Exiting the game. Goodbye!");
-                exit(0);
-            case STATE_MENU:
-                current = show_main_menu();
-                break;
-            case STATE_GAMEPLAY:
-                current = start_gameplay();
-                break;
+        case STATE_EXIT:
+            sts_println("Exiting the game. Goodbye!");
+            exit(0);
+        case STATE_MENU:
+            current = show_main_menu();
+            break;
+        case STATE_GAMEPLAY:
+            current = start_gameplay();
+            break;
         }
     }
 
     return 0;
 }
 
-const char ascii_art[] =
-    "  _____ _               _   _          \n"
-    " / ____| |             | | | |         \n"
-    "| (___ | | __ _ _   _  | |_| |__   ___ \n"
-    " \\___ \\| |/ _` | | | | | __| '_ \\ / _ \\\n"
-    " ____) | | (_| | |_| | | |_| | | |  __/\n"
-    "|_____/|_|\\__,_|\\__, |  \\__|_| |_|\\___|\n"
-    "           _____ __/ | _               \n"
-    "          / ____|___/ (_)              \n"
-    "         | (___  _ __  _ _ __ ___      \n"
-    "          \\___ \\| '_ \\| | '__/ _ \\     \n"
-    "          ____) | |_) | | | |  __/     \n"
-    "         |_____/| .__/|_|_|  \\___|     \n"
-    "                | |                    \n"
-    "                |_|                    ";
+const char ascii_art[] = "  _____ _               _   _          \n"
+                         " / ____| |             | | | |         \n"
+                         "| (___ | | __ _ _   _  | |_| |__   ___ \n"
+                         " \\___ \\| |/ _` | | | | | __| '_ \\ / _ \\\n"
+                         " ____) | | (_| | |_| | | |_| | | |  __/\n"
+                         "|_____/|_|\\__,_|\\__, |  \\__|_| |_|\\___|\n"
+                         "           _____ __/ | _               \n"
+                         "          / ____|___/ (_)              \n"
+                         "         | (___  _ __  _ _ __ ___      \n"
+                         "          \\___ \\| '_ \\| | '__/ _ \\     \n"
+                         "          ____) | |_) | | | |  __/     \n"
+                         "         |_____/| .__/|_|_|  \\___|     \n"
+                         "                | |                    \n"
+                         "                |_|                    ";
 
 GameState show_main_menu() {
     sts_clear_screen();

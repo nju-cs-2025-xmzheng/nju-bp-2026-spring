@@ -1,6 +1,6 @@
 #include "game.h"
-#include "sts_io.h"
 #include "stdlib.h"
+#include "sts_io.h"
 
 Player *player;
 Enemy *enemy;
@@ -18,34 +18,34 @@ GameState start_gameplay() {
         sts_println("(3) Defend (Costs 1 Energy; gain 5 Block)");
         int choice = sts_read_int_range("Choose an action: ", 1, 3);
         switch (choice) {
-            case 1:
-                if (enemy->base.health > 0) {
-                    deal_damage(&player->base, 8);
-                    sts_clear_screen();
-                    sts_println("Enemy attacks for 8 damage!");
-                    player->energy = player->initial_energy;
-                }
-                break;
-            case 2:
-                if (player->energy > 0) {
-                    deal_damage(&enemy->base, 6);
-                    player->energy--;
-                    sts_clear_screen();
-                    sts_println("You attack for 6 damage!");
-                } else {
-                    sts_println("Not enough energy!");
-                }
-                break;
-            case 3:
-                if (player->energy > 0) {
-                    player->base.block += 5;
-                    player->energy--;
-                    sts_clear_screen();
-                    sts_println("You gain 5 block!");
-                } else {
-                    sts_println("Not enough energy!");
-                }
-                break;
+        case 1:
+            if (enemy->base.health > 0) {
+                deal_damage(&player->base, 8);
+                sts_clear_screen();
+                sts_println("Enemy attacks for 8 damage!");
+                player->energy = player->initial_energy;
+            }
+            break;
+        case 2:
+            if (player->energy > 0) {
+                deal_damage(&enemy->base, 6);
+                player->energy--;
+                sts_clear_screen();
+                sts_println("You attack for 6 damage!");
+            } else {
+                sts_println("Not enough energy!");
+            }
+            break;
+        case 3:
+            if (player->energy > 0) {
+                player->base.block += 5;
+                player->energy--;
+                sts_clear_screen();
+                sts_println("You gain 5 block!");
+            } else {
+                sts_println("Not enough energy!");
+            }
+            break;
         }
         sts_pause(NULL);
     }
