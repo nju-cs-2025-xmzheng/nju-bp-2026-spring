@@ -1,4 +1,4 @@
-#include "main.h"
+#include "game.h"
 #include "sts_io.h"
 #include <stdlib.h>
 
