@@ -14,7 +14,7 @@ typedef enum {
     CARD_STRIKE,
     CARD_DEFEND,
     CARD_BLOODLETTING,
-    CARD_TYPE_COUNT
+    CARD_TYPE_COUNT,
 } CardType;
 
 void strike_effect(Player *player, Enemy *enemy);

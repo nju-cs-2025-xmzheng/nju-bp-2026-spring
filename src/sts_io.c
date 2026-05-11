@@ -146,9 +146,13 @@ void sts_clear_screen(void) {
     }
 }
 
-void sts_set_header(void (*func)(void)) { g_header_callback = func; }
+void sts_set_header(void (*func)(void)) {
+    g_header_callback = func;
+}
 
-void sts_clear_header(void) { g_header_callback = NULL; }
+void sts_clear_header(void) {
+    g_header_callback = NULL;
+}
 
 void sts_set_color(StsColor color) {
     sts_init();
