@@ -1,51 +1,51 @@
 #include "game.h"
-#include "stdlib.h"
+#include "card.h"
 #include "sts_io.h"
+#include <assert.h>
+#include <stdlib.h>
 
 Player *player;
 Enemy *enemy;
+Deck deck;
+
+CardType starting_cards[] = {
+    CARD_STRIKE, CARD_STRIKE, CARD_DEFEND, CARD_DEFEND, CARD_BLOODLETTING,
+};
 
 GameState start_gameplay() {
     Player p = {{80, 80, 0}, 3, 3};
     Enemy e = {{40, 40, 0}};
     player = &p;
     enemy = &e;
+    init_deck(&deck, starting_cards, 5);
     sts_set_header(draw_hud);
     while (player->base.health > 0 && enemy->base.health > 0) {
         sts_clear_screen();
-        sts_println("(1) End Turn");
-        sts_println("(2) Attack (Costs 1 Energy; deals 6 Damage to the enemy)");
-        sts_println("(3) Defend (Costs 1 Energy; gain 5 Block)");
-        int choice = sts_read_int_range("Choose an action: ", 1, 3);
-        switch (choice) {
-        case 1:
+        sts_println("(0) End Turn");
+        for (int i = 0, j = 0; i < deck.size; i++) {
+            if (deck.status[i] == CARD_IN_HAND) {
+                sts_printf("(%d) %s\n", ++j, deck.cards[i].description);
+            }
+        }
+        int choice = sts_read_int_range("Choose an action: ", 0, deck.size);
+        if (choice == 0) {
             if (enemy->base.health > 0) {
                 deal_damage(&player->base, 8);
                 sts_clear_screen();
                 sts_println("Enemy attacks for 8 damage!");
                 player->energy = player->initial_energy;
+                free_deck(&deck);
+                init_deck(&deck, starting_cards, 5);
             }
-            break;
-        case 2:
-            if (player->energy > 0) {
-                deal_damage(&enemy->base, 6);
-                player->energy--;
-                sts_clear_screen();
-                sts_println("You attack for 6 damage!");
+        } else {
+            Card *card = find_card_in_hand(&deck, choice - 1);
+            assert(card);
+            if (card->cost <= player->energy) {
+                play_card(card, player, enemy);
+                discard_card(&deck, choice - 1);
             } else {
                 sts_println("Not enough energy!");
             }
-            break;
-        case 3:
-            if (player->energy > 0) {
-                player->base.block += 5;
-                player->energy--;
-                sts_clear_screen();
-                sts_println("You gain 5 block!");
-            } else {
-                sts_println("Not enough energy!");
-            }
-            break;
         }
         sts_pause(NULL);
     }
