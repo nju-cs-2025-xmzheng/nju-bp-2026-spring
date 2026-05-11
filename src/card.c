@@ -21,6 +21,15 @@ void bloodletting_effect(Player *player, Enemy *enemy) {
     sts_println("You lose 3 health and gain 1 energy!");
 }
 
+Card cards[CARD_TYPE_COUNT] = {
+    {"Strike", 1, strike_effect,
+     "Strike (Costs 1 Energy; deals 6 Damage to the enemy)"},
+    {"Defend", 1, defend_effect,
+     "Defend (Costs 1 Energy; gains 5 Block to yourself)"},
+    {"Bloodletting", -1, bloodletting_effect,
+     "Bloodletting (Gains 1 Energy; loses 3 Health)"},
+};
+
 void play_card(Card *card, Player *player, Enemy *enemy) {
     assert(player->energy >= card->cost);
     player->energy -= card->cost;
