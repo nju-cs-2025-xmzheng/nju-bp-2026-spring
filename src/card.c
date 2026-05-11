@@ -15,8 +15,10 @@ void defend_effect(Player *player, Enemy *enemy) {
 }
 
 void bloodletting_effect(Player *player, Enemy *enemy) {
-    deal_damage(&player->base, 3);
-    sts_println("You deal 3 damage to yourself and gain 1 energy!");
+    player->base.health -= 3;
+    if (player->base.health < 0)
+        player->base.health = 0;
+    sts_println("You lose 3 health and gain 1 energy!");
 }
 
 void play_card(Card *card, Player *player, Enemy *enemy) {

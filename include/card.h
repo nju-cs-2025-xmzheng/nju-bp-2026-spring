@@ -27,7 +27,7 @@ static Card cards[CARD_TYPE_COUNT] = {
     {"Defend", 1, defend_effect,
      "Defend (Costs 1 Energy; gains 5 Block to yourself)"},
     {"Bloodletting", -1, bloodletting_effect,
-     "Bloodletting (Gains 1 Energy; deals 3 Damage to yourself)"},
+     "Bloodletting (Gains 1 Energy; loses 3 Health)"},
 };
 
 void play_card(Card *card, Player *player, Enemy *enemy);

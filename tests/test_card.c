@@ -24,8 +24,8 @@ int main() {
 
     play_card(&cards[CARD_BLOODLETTING], player, enemy);
     assert(player->energy == 2);
-    assert(player->base.health == 80);
-    assert(player->base.block == 2);
+    assert(player->base.health == 77);
+    assert(player->base.block == 5);
 
     sts_println("\nAll tests passed!");
 }
