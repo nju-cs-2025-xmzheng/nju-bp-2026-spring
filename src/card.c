@@ -1,18 +1,22 @@
 #include "card.h"
 #include "game.h"
+#include "sts_io.h"
 #include <assert.h>
 #include <stdlib.h>
 
 void strike_effect(Player *player, Enemy *enemy) {
     deal_damage(&enemy->base, 6);
+    sts_println("You attack for 6 damage!");
 }
 
 void defend_effect(Player *player, Enemy *enemy) {
     player->base.block += 5;
+    sts_println("You gain 5 block!");
 }
 
 void bloodletting_effect(Player *player, Enemy *enemy) {
     deal_damage(&player->base, 3);
+    sts_println("You deal 3 damage to yourself and gain 1 energy!");
 }
 
 void play_card(Card *card, Player *player, Enemy *enemy) {
