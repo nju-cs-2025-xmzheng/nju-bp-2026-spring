@@ -5,8 +5,11 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
-file(GLOB_RECURSE LIB_SOURCES "src/*")
-add_library(sts_lib ${LIB_SOURCES})
+add_library(sts_lib
+    src/card.c
+    src/game.c
+    src/sts_io.c
+)
 target_include_directories(sts_lib PUBLIC include)
 
 add_executable(sts main.c)
