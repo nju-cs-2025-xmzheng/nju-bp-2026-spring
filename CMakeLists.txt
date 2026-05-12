@@ -24,3 +24,5 @@ macro(add_sts_test name src_file)
 endmacro()
 
 add_sts_test(check_card tests/test_card.c)
+add_sts_test(check_deck tests/test_deck.c)
+add_sts_test(check_game tests/test_game.c)
