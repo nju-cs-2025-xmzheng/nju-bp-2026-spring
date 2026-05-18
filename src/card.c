@@ -3,6 +3,7 @@
 #include "sts_io.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 void strike_effect(Card *self, Deck *deck, Player *player, Enemy *enemy) {
     deal_damage(&enemy->base, 6);
@@ -21,13 +22,23 @@ void bloodletting_effect(Card *self, Deck *deck, Player *player, Enemy *enemy) {
     sts_println("You lose 3 health and gain 1 energy!");
 }
 
+void rampage_effect(Card *self, Deck *deck, Player *player, Enemy *enemy) {
+    int damage = self->data[0];
+    deal_damage(&enemy->base, damage);
+    self->data[0] += 5;
+    sts_println("You attack for %d damage!", damage);
+}
+
 Card cards[CARD_TYPE_COUNT] = {
-    {"Strike", 1, strike_effect, NULL,
+    {"Strike", .cost = 1, strike_effect, card_data_empty,
      "Costs 1 Energy; deals 6 Damage to the enemy"},
-    {"Defend", 1, defend_effect, NULL,
+    {"Defend", .cost = 1, defend_effect, card_data_empty,
      "Costs 1 Energy; gains 5 Block to yourself"},
-    {"Bloodletting", -1, bloodletting_effect, NULL,
+    {"Bloodletting", .cost = -1, bloodletting_effect, card_data_empty,
      "Gains 1 Energy; loses 3 Health"},
+    {"Rampage", .cost = 1, rampage_effect, card_data(8),
+     "Costs 1 Energy; deals % Damage to the enemy; increases damage by 5 each "
+     "time it's played"},
 };
 
 void print_card(Card *card) {
@@ -52,6 +63,12 @@ void init_deck(Deck *deck, CardType *card_types, int size) {
     deck->size = size;
     for (int i = 0; i < size; i++) {
         deck->cards[i] = cards[card_types[i]];
+        Card *template = &cards[card_types[i]];
+        if (template->data) {
+            deck->cards[i].data = malloc(sizeof(int) * template->data_cnt);
+            memcpy(deck->cards[i].data, template->data,
+                   sizeof(int) * template->data_cnt);
+        }
         deck->status[i] = CARD_IN_DRAW_PILE;
     }
     deck->cards_in_draw_pile = size;
@@ -125,6 +142,11 @@ void discard_all(Deck *deck) {
 }
 
 void free_deck(Deck *deck) {
+    for (int i = 0; i < deck->size; i++) {
+        if (deck->cards[i].data) {
+            free(deck->cards[i].data);
+        }
+    }
     free(deck->cards);
     free(deck->status);
 }
