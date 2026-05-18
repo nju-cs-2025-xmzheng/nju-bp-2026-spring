@@ -46,7 +46,7 @@ GameState start_gameplay() {
             Card *card = find_card_in_hand(&deck, choice - 1);
             assert(card);
             if (card->cost <= player->energy) {
-                play_card(card, player, enemy);
+                play_card(card, &deck, player, enemy);
                 discard_card(&deck, choice - 1);
             } else {
                 sts_println("Not enough energy!");

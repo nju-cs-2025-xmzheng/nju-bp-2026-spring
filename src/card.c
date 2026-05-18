@@ -4,17 +4,17 @@
 #include <assert.h>
 #include <stdlib.h>
 
-void strike_effect(Player *player, Enemy *enemy) {
+void strike_effect(Card *self, Deck *deck, Player *player, Enemy *enemy) {
     deal_damage(&enemy->base, 6);
     sts_println("You attack for 6 damage!");
 }
 
-void defend_effect(Player *player, Enemy *enemy) {
+void defend_effect(Card *self, Deck *deck, Player *player, Enemy *enemy) {
     player->base.block += 5;
     sts_println("You gain 5 block!");
 }
 
-void bloodletting_effect(Player *player, Enemy *enemy) {
+void bloodletting_effect(Card *self, Deck *deck, Player *player, Enemy *enemy) {
     player->base.health -= 3;
     if (player->base.health < 0)
         player->base.health = 0;
@@ -30,10 +30,10 @@ Card cards[CARD_TYPE_COUNT] = {
      "Bloodletting (Gains 1 Energy; loses 3 Health)"},
 };
 
-void play_card(Card *card, Player *player, Enemy *enemy) {
+void play_card(Card *card, Deck *deck, Player *player, Enemy *enemy) {
     assert(player->energy >= card->cost);
     player->energy -= card->cost;
-    card->effect(player, enemy);
+    card->effect(card, deck, player, enemy);
 }
 
 void init_deck(Deck *deck, CardType *card_types, int size) {
