@@ -1,5 +1,6 @@
 #include "game.h"
 #include "card.h"
+#include "deck.h"
 #include "sts_io.h"
 #include <assert.h>
 #include <stdlib.h>

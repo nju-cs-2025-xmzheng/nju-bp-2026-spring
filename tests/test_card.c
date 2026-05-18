@@ -1,4 +1,5 @@
 #include "card.h"
+#include "deck.h"
 #include "game.h"
 #include <assert.h>
 #include <string.h>
