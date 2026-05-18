@@ -1,4 +1,5 @@
 #include "deck.h"
+#include "random.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,6 +21,7 @@ void init_deck(Deck *deck, CardType *card_types, int size) {
     deck->cards_in_draw_pile = size;
     deck->cards_in_hand = 0;
     deck->cards_in_discard = 0;
+    shuffle_deck(deck);
 }
 
 void draw_cards(Deck *deck, int count) {
@@ -58,8 +60,26 @@ void shuffle_deck(Deck *deck) {
             deck->status[i] = CARD_IN_DRAW_PILE;
         }
     }
-    deck->cards_in_draw_pile = deck->cards_in_discard;
+    deck->cards_in_draw_pile += deck->cards_in_discard;
     deck->cards_in_discard = 0;
+    int *indices = malloc(sizeof(int) * deck->size);
+    for (int i = 0, j = 0; i < deck->size; i++) {
+        if (deck->status[i] == CARD_IN_DRAW_PILE) {
+            indices[j++] = i;
+        }
+    }
+    for (int i = deck->cards_in_draw_pile - 1; i > 0; i--) {
+        int j = randint(0, i);
+        int idx_i = indices[i];
+        int idx_j = indices[j];
+        Card temp_card = deck->cards[idx_i];
+        deck->cards[idx_i] = deck->cards[idx_j];
+        deck->cards[idx_j] = temp_card;
+        CardStatus temp_status = deck->status[idx_i];
+        deck->status[idx_i] = deck->status[idx_j];
+        deck->status[idx_j] = temp_status;
+    }
+    free(indices);
 }
 
 void discard_card(Deck *deck, int index) {
