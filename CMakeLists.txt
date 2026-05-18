@@ -9,6 +9,7 @@ add_library(sts_lib
     src/card.c
     src/deck.c
     src/game.c
+    src/random.c
     src/sts_io.c
 )
 target_include_directories(sts_lib PUBLIC include)
