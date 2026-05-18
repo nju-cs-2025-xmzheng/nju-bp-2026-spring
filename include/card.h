@@ -60,10 +60,4 @@ void play_card(Card *card, Deck *deck, Player *player, Enemy *enemy);
         default: sts_print_int)
 #endif
 
-typedef enum {
-    CARD_IN_DRAW_PILE,
-    CARD_IN_HAND,
-    CARD_IN_DISCARD,
-} CardStatus;
-
 #endif

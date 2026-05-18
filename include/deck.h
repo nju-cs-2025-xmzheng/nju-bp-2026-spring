@@ -3,6 +3,12 @@
 
 #include "card.h"
 
+typedef enum {
+    CARD_IN_DRAW_PILE,
+    CARD_IN_HAND,
+    CARD_IN_DISCARD,
+} CardStatus;
+
 struct Deck {
     Card *cards;
     CardStatus *status;
