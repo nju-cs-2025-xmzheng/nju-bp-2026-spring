@@ -22,13 +22,23 @@ void bloodletting_effect(Card *self, Deck *deck, Player *player, Enemy *enemy) {
 }
 
 Card cards[CARD_TYPE_COUNT] = {
-    {"Strike", 1, strike_effect,
-     "Strike (Costs 1 Energy; deals 6 Damage to the enemy)"},
-    {"Defend", 1, defend_effect,
-     "Defend (Costs 1 Energy; gains 5 Block to yourself)"},
-    {"Bloodletting", -1, bloodletting_effect,
-     "Bloodletting (Gains 1 Energy; loses 3 Health)"},
+    {"Strike", 1, strike_effect, NULL,
+     "Costs 1 Energy; deals 6 Damage to the enemy"},
+    {"Defend", 1, defend_effect, NULL,
+     "Costs 1 Energy; gains 5 Block to yourself"},
+    {"Bloodletting", -1, bloodletting_effect, NULL,
+     "Gains 1 Energy; loses 3 Health"},
 };
+
+void print_card(Card *card) {
+    int *data = card->data;
+    for (char *p = card->description; *p; p++) {
+        if (*p == '%')
+            sts_print(*data++);
+        else
+            sts_print(*p);
+    }
+}
 
 void play_card(Card *card, Deck *deck, Player *player, Enemy *enemy) {
     assert(player->energy >= card->cost);

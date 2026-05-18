@@ -27,7 +27,8 @@ GameState start_gameplay() {
         sts_println("(0) End Turn");
         for (int i = 0, j = 0; i < deck.size; i++) {
             if (deck.status[i] == CARD_IN_HAND) {
-                sts_printf("(%d) %s\n", ++j, deck.cards[i].description);
+                sts_printf("(%d) %s (", ++j, deck.cards[i].name);
+                sts_println(&deck.cards[i], ")");
             }
         }
         int choice =
