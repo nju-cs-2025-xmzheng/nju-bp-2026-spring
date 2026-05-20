@@ -25,7 +25,7 @@ void rampage_effect(Card *self, Deck *deck, Player *player, Enemy *enemy) {
     int damage = self->data[0];
     deal_damage(&enemy->base, damage);
     self->data[0] += 5;
-    sts_println("You attack for %d damage!", damage);
+    sts_printf("You attack for %d damage!\n", damage);
 }
 
 Card cards[CARD_TYPE_COUNT] = {
