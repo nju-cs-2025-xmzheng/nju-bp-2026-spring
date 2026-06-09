@@ -5,7 +5,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
-Deck deck;
+static int handle_player(Player *player, Enemy *enemy, Deck *deck);
+static void handle_enemy(Player *player, Enemy *enemy, Deck *deck);
 
 CardType starting_cards[] = {
     CARD_STRIKE,       CARD_STRIKE,  CARD_STRIKE,  CARD_STRIKE,
@@ -20,37 +21,9 @@ GameState start_gameplay() {
     init_deck(&deck, starting_cards, sizeof(starting_cards) / sizeof(CardType));
     draw_cards(&deck, 5);
     while (player.base.health > 0 && enemy.base.health > 0) {
-        sts_clear_screen();
-        draw_hud(player, enemy);
-        sts_println("(0) End Turn");
-        for (int i = 0, j = 0; i < deck.size; i++) {
-            if (deck.status[i] == CARD_IN_HAND) {
-                sts_printf("(%d) %s (", ++j, deck.cards[i].name);
-                sts_println(&deck.cards[i], ")");
-            }
-        }
-        int choice =
-            sts_read_int_range("\nChoose an action: ", 0, deck.cards_in_hand);
+        int choice = handle_player(&player, &enemy, &deck);
         if (choice == 0) {
-            if (enemy.base.health > 0) {
-                deal_damage(&player.base, 8);
-                sts_clear_screen();
-                draw_hud(player, enemy);
-                sts_println("Enemy attacks for 8 damage!");
-                player.base.block = 0;
-                player.energy = player.initial_energy;
-                discard_all(&deck);
-                draw_cards(&deck, 5);
-            }
-        } else {
-            Card *card = find_card_in_hand(&deck, choice - 1);
-            assert(card);
-            if (card->cost <= player.energy) {
-                play_card(card, &deck, &player, &enemy);
-                discard_card(&deck, choice - 1);
-            } else {
-                sts_println("Not enough energy!");
-            }
+            handle_enemy(&player, &enemy, &deck);
         }
         sts_pause(NULL);
     }
@@ -64,6 +37,44 @@ GameState start_gameplay() {
     sts_pause(NULL);
     free_deck(&deck);
     return STATE_MENU;
+}
+
+static int handle_player(Player *player, Enemy *enemy, Deck *deck) {
+    sts_clear_screen();
+    draw_hud(*player, *enemy);
+    sts_println("(0) End Turn");
+    for (int i = 0, j = 0; i < deck->size; i++) {
+        if (deck->status[i] == CARD_IN_HAND) {
+            sts_printf("(%d) %s (", ++j, deck->cards[i].name);
+            sts_println(&deck->cards[i], ")");
+        }
+    }
+    int choice =
+        sts_read_int_range("\nChoose an action: ", 0, deck->cards_in_hand);
+    if (choice != 0) {
+        Card *card = find_card_in_hand(deck, choice - 1);
+        assert(card);
+        if (card->cost <= player->energy) {
+            play_card(card, deck, player, enemy);
+            discard_card(deck, choice - 1);
+        } else {
+            sts_println("Not enough energy!");
+        }
+    }
+    return choice;
+}
+
+static void handle_enemy(Player *player, Enemy *enemy, Deck *deck) {
+    if (enemy->base.health > 0) {
+        deal_damage(&player->base, 8);
+        sts_clear_screen();
+        draw_hud(*player, *enemy);
+        sts_println("Enemy attacks for 8 damage!");
+        player->base.block = 0;
+        player->energy = player->initial_energy;
+        discard_all(deck);
+        draw_cards(deck, 5);
+    }
 }
 
 void draw_hud(Player player, Enemy enemy) {
