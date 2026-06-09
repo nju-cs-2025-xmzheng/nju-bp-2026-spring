@@ -32,8 +32,16 @@ typedef enum {
     INTENT_COUNT,
 } EnemyIntentType;
 
+typedef enum {
+    ENEMY_PHASE_ONE,
+    ENEMY_PHASE_TWO_ENTERING,
+    ENEMY_PHASE_TWO,
+} EnemyPhase;
+
 typedef struct {
     Entity base;
+    int turn;
+    EnemyPhase phase;
     EnemyIntentType intent;
 } Enemy;
 

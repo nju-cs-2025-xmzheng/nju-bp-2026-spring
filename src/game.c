@@ -1,6 +1,7 @@
 #include "game.h"
 #include "card.h"
 #include "deck.h"
+#include "enemy.h"
 #include "sts_io.h"
 #include <assert.h>
 #include <stdlib.h>
@@ -66,10 +67,56 @@ static int handle_player(Player *player, Enemy *enemy, Deck *deck) {
 
 static void handle_enemy(Player *player, Enemy *enemy, Deck *deck) {
     if (enemy->base.health > 0) {
-        deal_damage(&player->base, 8);
+        if (enemy->phase == ENEMY_PHASE_ONE &&
+            enemy->base.health <= enemy->base.max_health / 2) {
+            enemy->phase = ENEMY_PHASE_TWO_ENTERING;
+            enemy->turn = 0;
+        }
+
+        if (enemy->phase == ENEMY_PHASE_ONE) {
+            if (enemy->turn % 3 == 0) {
+                enemy->intent = INTENT_DEF_6;
+            } else if (enemy->turn % 3 == 1) {
+                enemy->intent = INTENT_ATK_8;
+            } else {
+                enemy->intent = INTENT_ATK_5_DEF_10;
+            }
+        } else if (enemy->phase == ENEMY_PHASE_TWO_ENTERING) {
+            enemy->intent = INTENT_ATK_16;
+        } else {
+            if (enemy->turn % 2 == 0) {
+                enemy->intent = INTENT_DEF_10;
+            } else {
+                enemy->intent = INTENT_ATK_12;
+            }
+        }
+
+        EnemyIntentType intent = enemy->intent;
+        enemy->base.block = 0;
+        enemy_intents[intent].effect(player, enemy);
         sts_clear_screen();
         draw_hud(*player, *enemy);
-        sts_println("Enemy attacks for 8 damage!");
+        sts_println("Enemy: ", enemy_intents[intent].description);
+        if (enemy->phase == ENEMY_PHASE_TWO_ENTERING) {
+            enemy->phase = ENEMY_PHASE_TWO;
+            enemy->turn = 0;
+            enemy->intent = INTENT_DEF_10;
+        } else {
+            enemy->turn++;
+            if (enemy->phase == ENEMY_PHASE_ONE) {
+                if (enemy->turn % 3 == 0) {
+                    enemy->intent = INTENT_DEF_6;
+                } else if (enemy->turn % 3 == 1) {
+                    enemy->intent = INTENT_ATK_8;
+                } else {
+                    enemy->intent = INTENT_ATK_5_DEF_10;
+                }
+            } else if (enemy->turn % 2 == 0) {
+                enemy->intent = INTENT_DEF_10;
+            } else {
+                enemy->intent = INTENT_ATK_12;
+            }
+        }
         player->base.block = 0;
         player->energy = player->initial_energy;
         discard_all(deck);
