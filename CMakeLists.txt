@@ -8,6 +8,7 @@ set(CMAKE_C_EXTENSIONS OFF)
 add_library(sts_lib
     src/card.c
     src/deck.c
+    src/enemy.c
     src/game.c
     src/random.c
     src/sts_io.c

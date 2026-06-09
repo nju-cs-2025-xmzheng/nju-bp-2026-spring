@@ -22,8 +22,19 @@ typedef struct {
     int energy;
 } Player;
 
+typedef enum {
+    INTENT_DEF_6,
+    INTENT_ATK_8,
+    INTENT_ATK_5_DEF_10,
+    INTENT_ATK_16,
+    INTENT_DEF_10,
+    INTENT_ATK_12,
+    INTENT_COUNT,
+} EnemyIntentType;
+
 typedef struct {
     Entity base;
+    EnemyIntentType intent;
 } Enemy;
 
 void draw_hud(Player player, Enemy enemy);
