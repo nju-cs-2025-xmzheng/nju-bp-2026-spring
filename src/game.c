@@ -57,6 +57,12 @@ static int handle_player(Player *player, Enemy *enemy, Deck *deck) {
         assert(card);
         if (card->cost <= player->energy) {
             play_card(card, deck, player, enemy);
+            if (enemy->phase == ENEMY_PHASE_ONE &&
+                enemy->base.health <= enemy->base.max_health / 2) {
+                enemy->phase = ENEMY_PHASE_TWO_ENTERING;
+                enemy->turn = 0;
+                enemy->intent = INTENT_ATK_16;
+            }
             discard_card(deck, choice - 1);
         } else {
             sts_println("Not enough energy!");
@@ -96,7 +102,7 @@ static void handle_enemy(Player *player, Enemy *enemy, Deck *deck) {
         enemy_intents[intent].effect(player, enemy);
         sts_clear_screen();
         draw_hud(*player, *enemy);
-        sts_println("Enemy: ", enemy_intents[intent].description);
+        sts_println("Enemy ", enemy_intents[intent].description, ".");
         if (enemy->phase == ENEMY_PHASE_TWO_ENTERING) {
             enemy->phase = ENEMY_PHASE_TWO;
             enemy->turn = 0;
@@ -141,8 +147,11 @@ void draw_hud(Player player, Enemy enemy) {
     sts_printf(" ♥︎ %d/%d", enemy.base.health, enemy.base.max_health);
     sts_reset_color();
     sts_set_color(STS_COLOR_GREEN);
-    sts_printf(" ⛊ %d\n", enemy.base.block);
+    sts_printf(" ⛊ %d", enemy.base.block);
     sts_reset_color();
+    sts_print("\nIntent: Enemy ");
+    sts_print(enemy_intents[enemy.intent].description);
+    sts_println(".");
     sts_separator();
 }
 
