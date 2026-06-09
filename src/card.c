@@ -36,14 +36,14 @@ Card cards[CARD_TYPE_COUNT] = {
     {"Bloodletting", .cost = -1, bloodletting_effect, card_data_empty,
      "Gains 1 Energy; loses 3 Health"},
     {"Rampage", .cost = 1, rampage_effect, card_data(8),
-     "Costs 1 Energy; deals % Damage to the enemy; increases damage by 5 each "
+     "Costs 1 Energy; deals $ Damage to the enemy; increases damage by 5 each "
      "time it's played"},
 };
 
 void print_card(Card *card) {
     int *data = card->data;
     for (char *p = card->description; *p; p++) {
-        if (*p == '%')
+        if (*p == '$')
             sts_print(*data++);
         else
             sts_print(*p);
