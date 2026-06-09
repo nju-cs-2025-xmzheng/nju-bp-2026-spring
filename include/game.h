@@ -26,7 +26,7 @@ typedef struct {
     Entity base;
 } Enemy;
 
-void draw_hud();
+void draw_hud(Player player, Enemy enemy);
 
 void deal_damage(Entity *target, int damage);
 
