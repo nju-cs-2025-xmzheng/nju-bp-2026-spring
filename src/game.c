@@ -10,9 +10,9 @@ static int handle_player(Player *player, Enemy *enemy, Deck *deck);
 static void handle_enemy(Player *player, Enemy *enemy, Deck *deck);
 
 CardType starting_cards[] = {
-    CARD_STRIKE,       CARD_STRIKE,  CARD_STRIKE,  CARD_STRIKE,
-    CARD_DEFEND,       CARD_DEFEND,  CARD_DEFEND,  CARD_DEFEND,
-    CARD_BLOODLETTING, CARD_RAMPAGE, CARD_RAMPAGE,
+    CARD_STRIKE,  CARD_STRIKE, CARD_STRIKE, CARD_STRIKE,       CARD_DEFEND,
+    CARD_DEFEND,  CARD_DEFEND, CARD_DEFEND, CARD_BLOODLETTING, CARD_RAMPAGE,
+    CARD_RAMPAGE, CARD_ANGER,  CARD_ANGER,
 };
 
 GameState start_gameplay() {

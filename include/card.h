@@ -27,6 +27,7 @@ typedef enum {
     CARD_DEFEND,
     CARD_BLOODLETTING,
     CARD_RAMPAGE,
+    CARD_ANGER,
     CARD_TYPE_COUNT,
 } CardType;
 
@@ -34,6 +35,7 @@ void strike_effect(Card *self, Deck *deck, Player *player, Enemy *enemy);
 void defend_effect(Card *self, Deck *deck, Player *player, Enemy *enemy);
 void bloodletting_effect(Card *self, Deck *deck, Player *player, Enemy *enemy);
 void rampage_effect(Card *self, Deck *deck, Player *player, Enemy *enemy);
+void anger_effect(Card *self, Deck *deck, Player *player, Enemy *enemy);
 
 extern Card cards[CARD_TYPE_COUNT];
 

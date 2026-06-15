@@ -5,7 +5,7 @@
 #include <string.h>
 
 static void test_card_definitions(void) {
-    assert(CARD_TYPE_COUNT == 4);
+    assert(CARD_TYPE_COUNT == 5);
 
     assert(strcmp(cards[CARD_STRIKE].name, "Strike") == 0);
     assert(cards[CARD_STRIKE].cost == 1);
@@ -24,6 +24,10 @@ static void test_card_definitions(void) {
     assert(cards[CARD_RAMPAGE].effect == rampage_effect);
     assert(cards[CARD_RAMPAGE].data_cnt == 1);
     assert(cards[CARD_RAMPAGE].data[0] == 8);
+
+    assert(strcmp(cards[CARD_ANGER].name, "Anger") == 0);
+    assert(cards[CARD_ANGER].cost == 0);
+    assert(cards[CARD_ANGER].effect == anger_effect);
 }
 
 static void test_play_card_applies_cost_and_effect(void) {
@@ -80,9 +84,32 @@ static void test_rampage_damage_scales_on_same_card_copy(void) {
     free_deck(&deck);
 }
 
+static void test_anger_deals_damage_and_adds_copy_to_discard(void) {
+    CardType types[] = {CARD_ANGER};
+    Deck deck;
+    Player p = {{80, 80, 0}, 3, 3};
+    Enemy e = {{40, 40, 0}};
+
+    init_deck(&deck, types, 1);
+    draw_cards(&deck, 1);
+    Card *anger = find_card_in_hand(&deck, 0);
+    assert(anger != NULL);
+
+    play_card(anger, &deck, &p, &e);
+    assert(p.energy == 3);
+    assert(e.base.health == 34);
+    assert(deck.size == 2);
+    assert(deck.cards_in_discard == 1);
+    assert(strcmp(deck.cards[1].name, "Anger") == 0);
+    assert(deck.status[1] == CARD_IN_DISCARD);
+
+    free_deck(&deck);
+}
+
 int main(void) {
     test_card_definitions();
     test_play_card_applies_cost_and_effect();
     test_bloodletting_does_not_make_health_negative();
     test_rampage_damage_scales_on_same_card_copy();
+    test_anger_deals_damage_and_adds_copy_to_discard();
 }

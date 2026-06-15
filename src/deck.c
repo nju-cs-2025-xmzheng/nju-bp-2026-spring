@@ -116,3 +116,19 @@ void free_deck(Deck *deck) {
     free(deck->cards);
     free(deck->status);
 }
+
+void add_card_to_discard(Deck *deck, CardType type) {
+    deck->size++;
+    deck->cards = realloc(deck->cards, sizeof(Card) * deck->size);
+    deck->status = realloc(deck->status, sizeof(CardStatus) * deck->size);
+    deck->cards[deck->size - 1] = cards[type];
+    Card *template = &cards[type];
+    if (template->data) {
+        deck->cards[deck->size - 1].data =
+            malloc(sizeof(int) * template->data_cnt);
+        memcpy(deck->cards[deck->size - 1].data, template->data,
+               sizeof(int) * template->data_cnt);
+    }
+    deck->status[deck->size - 1] = CARD_IN_DISCARD;
+    deck->cards_in_discard++;
+}

@@ -1,8 +1,10 @@
 #include "card.h"
+#include "deck.h"
 #include "game.h"
 #include "sts_io.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 void strike_effect(Card *self, Deck *deck, Player *player, Enemy *enemy) {
     deal_damage(&enemy->base, 6);
@@ -28,6 +30,13 @@ void rampage_effect(Card *self, Deck *deck, Player *player, Enemy *enemy) {
     sts_printf("You attack for %d damage!\n", damage);
 }
 
+void anger_effect(Card *self, Deck *deck, Player *player, Enemy *enemy) {
+    deal_damage(&enemy->base, 6);
+    add_card_to_discard(deck, CARD_ANGER);
+    sts_println(
+        "You deal 6 damage and add a copy of Anger to your discard pile!");
+}
+
 Card cards[CARD_TYPE_COUNT] = {
     {"Strike", .cost = 1, strike_effect, card_data_empty,
      "Costs 1 Energy; deals 6 Damage to the enemy"},
@@ -38,6 +47,8 @@ Card cards[CARD_TYPE_COUNT] = {
     {"Rampage", .cost = 1, rampage_effect, card_data(8),
      "Costs 1 Energy; deals $ Damage to the enemy; increases damage by 5 each "
      "time it's played"},
+    {"Anger", .cost = 0, anger_effect, card_data_empty,
+     "Deals 6 damage; adds a copy of this card to discard pile"},
 };
 
 void print_card(Card *card) {

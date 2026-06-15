@@ -25,5 +25,6 @@ void shuffle_deck(Deck *deck);
 void discard_card(Deck *deck, int index);
 void discard_all(Deck *deck);
 void free_deck(Deck *deck);
+void add_card_to_discard(Deck *deck, CardType type);
 
 #endif

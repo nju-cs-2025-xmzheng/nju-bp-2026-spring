@@ -129,6 +129,31 @@ static void test_init_deck_deep_copies_mutable_card_data(void) {
     free_deck(&deck);
 }
 
+static void test_add_card_to_discard_grows_deck_and_deep_copies_data(void) {
+    CardType types[] = {CARD_STRIKE};
+    Deck deck;
+
+    init_deck(&deck, types, 1);
+    add_card_to_discard(&deck, CARD_RAMPAGE);
+
+    assert(deck.size == 2);
+    assert(deck.cards_in_draw_pile == 1);
+    assert(deck.cards_in_hand == 0);
+    assert(deck.cards_in_discard == 1);
+    assert(deck.status[1] == CARD_IN_DISCARD);
+    assert(strcmp(deck.cards[1].name, "Rampage") == 0);
+
+    // mutable card data must be deep copied, not shared with the template
+    assert(deck.cards[1].data != cards[CARD_RAMPAGE].data);
+    assert(deck.cards[1].data[0] == 8);
+    deck.cards[1].data[0] = 42;
+    assert(cards[CARD_RAMPAGE].data[0] == 8);
+
+    assert_deck_counts(&deck);
+
+    free_deck(&deck);
+}
+
 int main(void) {
     init_rand_with_seed(42);
     test_init_deck_copies_cards_into_draw_pile();
@@ -137,4 +162,5 @@ int main(void) {
     test_discard_all_and_shuffle_discard_into_draw_pile();
     test_draw_reshuffles_discard_when_draw_pile_is_empty();
     test_init_deck_deep_copies_mutable_card_data();
+    test_add_card_to_discard_grows_deck_and_deep_copies_data();
 }
